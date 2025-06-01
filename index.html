@@ -3,81 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RippleCert™ Submission</title>
+    <title>RippleCert Content Verification</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
-        button { background: #007cba; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background: #005a87; }
-        .status { padding: 15px; margin: 20px 0; border-radius: 4px; display: none; }
-        .success { background: #d4edda; color: #155724; }
-        .error { background: #f8d7da; color: #721c24; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            max-width: 700px; 
+            margin: 40px auto; 
+            padding: 20px;
+            background: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 20px;
+        }
+        .logo {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #007cba;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        .description {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #007cba;
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .criteria-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+        .form-group { 
+            margin-bottom: 25px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+            color: #333;
+        }
+        .required {
+            color: #dc3545;
+        }
+        input, textarea, select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #e1e5e9; 
+            border-radius: 6px; 
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        input:focus, textarea:focus, select:focus { 
+            outline: none; 
+            border-color: #007cba; 
+            box-shadow: 0 0 0 3px rgba(0, 124, 186, 0.1);
+        }
+        .file-info {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            border: 1px solid #ffeaa7;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            min-width: 18px;
+            height: 18px;
+        }
+        .checkbox-group label {
+            margin: 0;
+            font-weight: normal;
+            line-height: 1.4;
+            cursor: pointer;
+        }
+        .privacy-text {
+            font-size: 0.9em;
+            color: #555;
+        }
+        button { 
+            background: linear-gradient(135deg, #007cba, #005a87);
+            color: white; 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 124, 186, 0.3);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .status { 
+            padding: 15px; 
+            margin: 20px 0; 
+            border-radius: 6px; 
+            display: none; 
+            font-weight: 600;
+        }
+        .success { 
+            background: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb; 
+        }
+        .error { 
+            background: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb; 
+        }
+        .usage-info {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        .usage-count {
+            font-weight: bold;
+            color: #007cba;
+        }
     </style>
 </head>
 <body>
-    <h1>RippleCert™ Content Verification</h1>
-    
-    <form id="ripplecertForm">
-        <div class="form-group">
-            <label for="name">Your Name *</label>
-            <input type="text" id="name" name="name" required>
+    <div class="container">
+        <div class="header">
+            <div class="logo">RippleCert</div>
+            <div class="subtitle">AI-Powered Content Verification System</div>
         </div>
         
-        <div class="form-group">
-            <label for="email">Email Address *</label>
-            <input type="email" id="email" name="email" required>
+        <div class="description">
+            <h3 style="margin-top: 0; color: #007cba;">What is RippleCert?</h3>
+            <p>RippleCert verifies your content for quality and authenticity in an AI-dominated world. Our system evaluates your content against four key criteria to provide an independent quality certification.</p>
+            
+            <div class="criteria-grid">
+                <div class="criteria-item">
+                    <strong>🤖 AI Detection</strong><br>
+                    Human vs AI-generated analysis
+                </div>
+                <div class="criteria-item">
+                    <strong>✅ Factual Accuracy</strong><br>
+                    Verified claims and sources
+                </div>
+                <div class="criteria-item">
+                    <strong>🎯 Quality Standards</strong><br>
+                    Professional writing & branding
+                </div>
+                <div class="criteria-item">
+                    <strong>⚖️ Ethical Compliance</strong><br>
+                    Responsible and appropriate content
+                </div>
+            </div>
+        </div>
+
+        <div class="usage-info">
+            <div class="usage-count">Free Tier: 5 verifications per month</div>
         </div>
         
-        <div class="form-group">
-            <label for="title">Content Title *</label>
-            <input type="text" id="title" name="title" required>
+        <form id="ripplecertForm">
+            <div class="form-group">
+                <label for="name">Your Name <span class="required">*</span></label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address <span class="required">*</span></label>
+                <input type="email" id="email" name="email" required>
+                <small style="color: #666;">Used for delivery and usage tracking only</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="organization">Organization/Company</label>
+                <input type="text" id="organization" name="organization" placeholder="Optional - helps with context">
+            </div>
+            
+            <div class="form-group">
+                <label for="content-type">Content Type <span class="required">*</span></label>
+                <select id="content-type" name="content_type" required>
+                    <option value="">Select content type...</option>
+                    <option value="blog-post">Blog Post/Article</option>
+                    <option value="marketing-copy">Marketing Copy</option>
+                    <option value="social-media">Social Media Post</option>
+                    <option value="business-document">Business Document</option>
+                    <option value="educational-content">Educational Content</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="title">Content Title/Description <span class="required">*</span></label>
+                <input type="text" id="title" name="title" required placeholder="Brief description of your content">
+            </div>
+            
+            <div class="form-group">
+                <label for="purpose">Intended Use <span class="required">*</span></label>
+                <select id="purpose" name="purpose" required>
+                    <option value="">How will this content be used?</option>
+                    <option value="publication">Publication/Website</option>
+                    <option value="social-sharing">Social Media Sharing</option>
+                    <option value="marketing-campaign">Marketing Campaign</option>
+                    <option value="internal-use">Internal Use</option>
+                    <option value="client-presentation">Client Presentation</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="ai-disclosure">AI Usage Disclosure <span class="required">*</span></label>
+                <select id="ai-disclosure" name="ai_disclosure" required>
+                    <option value="">Select AI usage...</option>
+                    <option value="human-only">100% Human-written</option>
+                    <option value="ai-assisted">AI-assisted (human edited)</option>
+                    <option value="ai-generated">AI-generated</option>
+                    <option value="mixed">Mixed human and AI</option>
+                    <option value="unknown">Not sure</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="file">Upload Content File <span class="required">*</span></label>
+                <input type="file" id="file" name="file" accept=".pdf,.doc,.docx,.txt,image/*" required>
+                <div class="file-info">
+                    <strong>Supported formats:</strong> PDF, DOC, DOCX, TXT, JPG, PNG<br>
+                    <strong>Max file size:</strong> 10MB<br>
+                    <strong>Max pages:</strong> 10 pages for documents
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="privacy-consent" name="privacy_consent" required>
+                <label for="privacy-consent" class="privacy-text">
+                    <strong>Zero Data Retention Consent <span class="required">*</span></strong><br>
+                    I understand and consent that:
+                    <ul style="margin: 8px 0; padding-left: 20px;">
+                        <li>My file will be processed immediately and permanently deleted</li>
+                        <li>No personal information or content is stored on RippleCert servers</li>
+                        <li>Only the certificate results are sent to my email</li>
+                        <li>Usage count is tracked by email for free tier limits only</li>
+                        <li>This process typically takes 30-60 seconds to complete</li>
+                    </ul>
+                </label>
+            </div>
+            
+            <button type="submit" id="submit-btn">Submit for Verification</button>
+            
+            <div id="status" class="status"></div>
+        </form>
+
+        <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center; font-size: 0.9em; color: #666;">
+            <p><strong>RippleCert</strong> - Building trust in an AI-powered world</p>
+            <p>Questions? Contact us at support@ripplecert.com</p>
         </div>
-        
-        <div class="form-group">
-            <label for="organization">Organization</label>
-            <input type="text" id="organization" name="organization" placeholder="Optional">
-        </div>
-        
-        <div class="form-group">
-            <label for="file">Upload PDF or Image *</label>
-            <input type="file" id="file" name="file" accept=".pdf,image/*" required>
-        </div>
-        
-        <button type="submit">Submit for Verification</button>
-        
-        <div id="status" class="status"></div>
-    </form>
+    </div>
 
     <script>
         document.getElementById('ripplecertForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const statusDiv = document.getElementById('status');
-            statusDiv.style.display = 'block';
-            statusDiv.className = 'status';
-            statusDiv.textContent = 'Processing your submission...';
+            const submitBtn = document.getElementById('submit-btn');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+            showStatus('success', 'Processing your submission... This may take up to 60 seconds.');
             
             const formData = new FormData(this);
+            formData.append('submission_time', new Date().toISOString());
             
             try {
-                // We'll add the Zapier webhook URL here in Step 4
+                // Replace with actual Zapier webhook URL
                 const response = await fetch('ZAPIER_WEBHOOK_URL_GOES_HERE', {
                     method: 'POST',
                     body: formData
                 });
                 
                 if (response.ok) {
-                    statusDiv.className = 'status success';
-                    statusDiv.textContent = 'Submitted successfully! Check your email for results.';
+                    showStatus('success', 'Submitted successfully! Your RippleCert results will be emailed to you within 2 minutes.');
                     this.reset();
                 } else {
                     throw new Error('Submission failed');
                 }
             } catch (error) {
-                statusDiv.className = 'status error';
-                statusDiv.textContent = 'Submission failed. Please try again.';
+                showStatus('error', 'Submission failed. Please check your internet connection and try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit for Verification';
+            }
+        });
+
+        function showStatus(type, message) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            statusDiv.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 10000);
+            }
+        }
+
+        // File size validation
+        document.getElementById('file').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file && file.size > 10 * 1024 * 1024) { // 10MB
+                showStatus('error', 'File size too large. Please select a file under 10MB.');
+                this.value = '';
             }
         });
     </script>
